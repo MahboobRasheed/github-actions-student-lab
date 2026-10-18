@@ -1,0 +1,26 @@
+
+name: Repository Dispatch Webhook
+
+on:
+  repository_dispatch:
+    types:
+      - custom-webhook
+
+jobs:
+  webhook-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Display Webhook Information
+        env:
+          WEBHOOK_TYPE: ${{ github.event.action }}
+          WEBHOOK_MESSAGE: ${{ github.event.client_payload.message }}
+        run: |
+          echo "GitHub Event: $GITHUB_EVENT_NAME"
+          echo "Webhook Type: $WEBHOOK_TYPE"
+          echo "Webhook Message: $WEBHOOK_MESSAGE"
+          echo "Triggered by: $GITHUB_ACTOR"
+          echo "Runner OS: $RUNNER_OS"
+
+      - name: Webhook Success Message
+        run: echo "Webhook executed successfully!"
