@@ -1,0 +1,42 @@
+
+name: Manual Workflow Trigger
+
+on:
+  workflow_dispatch:
+    inputs:
+      name:
+        description: 'Enter your name'
+        required: true
+        type: string
+
+      greeting:
+        description: 'Enter your greeting message'
+        required: true
+        default: 'Hello'
+        type: string
+
+      data:
+        description: 'Enter additional information'
+        required: true
+        default: 'GitHub Actions Assignment'
+        type: string
+
+jobs:
+  manual-job:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Display Manual Inputs
+        env:
+          USER_NAME: ${{ inputs.name }}
+          GREETING: ${{ inputs.greeting }}
+          USER_DATA: ${{ inputs.data }}
+        run: |
+          echo "Name: $USER_NAME"
+          echo "Greeting: $GREETING"
+          echo "Data: $USER_DATA"
+          echo "Triggered by: $GITHUB_ACTOR"
+          echo "Event: $GITHUB_EVENT_NAME"
+
+      - name: Success Message
+        run: echo "Manual workflow completed successfully!"
