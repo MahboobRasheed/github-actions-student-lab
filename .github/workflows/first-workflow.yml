@@ -1,0 +1,21 @@
+
+name: My First GitHub Actions Workflow
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  hello-world:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Print Welcome Message
+        run: echo "Hello! My first GitHub Actions workflow is running."
+
+      - name: Display Runner Information
+        run: |
+          echo "Operating System: $RUNNER_OS"
+          echo "Repository: $GITHUB_REPOSITORY"
+          echo "Triggered By: $GITHUB_ACTOR"
