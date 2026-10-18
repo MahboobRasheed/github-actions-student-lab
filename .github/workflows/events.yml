@@ -1,0 +1,27 @@
+
+name: Push and Pull Request Workflow
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+
+  pull_request:
+    branches:
+      - main
+      - dev
+
+jobs:
+  event-demo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Show Event Information
+        run: |
+          echo "GitHub Event: $GITHUB_EVENT_NAME"
+          echo "Branch: $GITHUB_REF"
+          echo "Triggered by: $GITHUB_ACTOR"
+
+      - name: Display Success Message
+        run: echo "Workflow executed successfully!"
