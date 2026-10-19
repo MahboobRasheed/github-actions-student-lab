@@ -1,0 +1,38 @@
+
+name: Module 6B - Dependency Caching
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  dependency-cache:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python with Cache
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: requirements.txt
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install -r requirements.txt
+
+      - name: Verify Installation
+        run: |
+          python -c "import requests; print('Requests version:', requests.__version__)"
+
+      - name: Display Pip Cache
+        run: |
+          python -m pip cache info
+
+      - name: Success Message
+        run: echo "Dependency caching workflow completed!"
