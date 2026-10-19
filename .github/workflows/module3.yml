@@ -1,0 +1,56 @@
+
+name: Module 3 - Contexts and Conditionals
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  inspect-contexts:
+    runs-on: ubuntu-latest
+
+    env:
+      MODULE_NAME: "GitHub Actions Module 3"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Display Context Objects
+        env:
+          ACTOR: ${{ github.actor }}
+          EVENT_NAME: ${{ github.event_name }}
+          RUNNER_OS: ${{ runner.os }}
+          REPO_VARIABLE: ${{ vars.DEMO_MESSAGE || 'Not configured yet' }}
+        run: |
+          echo "GitHub Actor: $ACTOR"
+          echo "GitHub Event: $EVENT_NAME"
+          echo "Runner OS: $RUNNER_OS"
+          echo "Repository Variable: $REPO_VARIABLE"
+          echo "Environment: $MODULE_NAME"
+
+      - name: Test contains() Condition
+        if: ${{ contains(github.repository, 'github-actions-student-lab') }}
+        run: echo "contains() condition passed!"
+
+      - name: Test success() Condition
+        if: ${{ success() }}
+        run: echo "All previous steps completed successfully!"
+
+      - name: Test failure() Condition
+        if: ${{ failure() }}
+        run: echo "A previous step failed!"
+
+      - name: Test always() Condition
+        if: ${{ always() }}
+        run: echo "This step runs regardless of previous results!"
+
+  dependency-job:
+    needs: inspect-contexts
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Verify Job Dependency
+        run: echo "Second job executed after first job!"
