@@ -1,0 +1,55 @@
+
+name: Module 6C - Redis Service Container
+
+on:
+  workflow_dispatch:
+
+jobs:
+  redis-integration-test:
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    steps:
+      - name: Display Service Container Information
+        env:
+          REDIS_CONTAINER: ${{ job.services.redis.id }}
+        run: |
+          echo "Redis Container ID: $REDIS_CONTAINER"
+          echo "Port Mapping: 6379:6379"
+          docker ps --no-trunc
+          docker port "$REDIS_CONTAINER"
+
+      - name: Verify Redis Is Ready
+        env:
+          REDIS_CONTAINER: ${{ job.services.redis.id }}
+        run: |
+          echo "Checking Redis connection..."
+          docker exec "$REDIS_CONTAINER" redis-cli ping
+
+      - name: Test Redis SET and GET
+        env:
+          REDIS_CONTAINER: ${{ job.services.redis.id }}
+        run: |
+          docker exec "$REDIS_CONTAINER" redis-cli SET student "MahboobRasheed"
+
+          RESULT=$(docker exec "$REDIS_CONTAINER" redis-cli GET student)
+
+          echo "Stored Redis Value: $RESULT"
+
+          test "$RESULT" = "MahboobRasheed"
+
+          echo "Redis integration test passed!"
+
+      - name: Success Message
+        run: |
+          echo "Module 6C completed successfully!"
