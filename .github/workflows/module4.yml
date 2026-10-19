@@ -1,0 +1,61 @@
+
+name: Module 4 - Variables Secrets and Token
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  security-demo:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Display Repository Variable
+        env:
+          DEMO_MESSAGE: ${{ vars.DEMO_MESSAGE }}
+        run: |
+          echo "Repository Variable: $DEMO_MESSAGE"
+
+      - name: Test Encrypted Secret
+        env:
+          MY_SECRET: ${{ secrets.MY_SECRET }}
+        run: |
+          if [ -z "$MY_SECRET" ]; then
+            echo "MY_SECRET is missing!"
+            exit 1
+          fi
+
+          echo "::add-mask::$MY_SECRET"
+          echo "Secret Value: $MY_SECRET"
+          echo "Encrypted secret accessed successfully!"
+
+      - name: Test GitHub Token
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          echo "Testing GitHub API authentication..."
+
+          curl -fsS \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/$GITHUB_REPOSITORY/actions/runs?per_page=1" \
+            | jq -r '"Authenticated API request succeeded. Total runs: \(.total_count)"'
+
+      - name: Verify Git Checkout
+        run: |
+          git log -1 --oneline
+
+      - name: Success Message
+        run: |
+          echo "Module 4 completed successfully!"
