@@ -1,0 +1,54 @@
+
+name: Module 5 - Multi OS Runners
+
+on:
+  workflow_dispatch:
+
+jobs:
+  ubuntu-job:
+    name: Ubuntu Runner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Display Ubuntu Information
+        run: |
+          echo "Running on Ubuntu"
+          echo "Runner OS: $RUNNER_OS"
+          uname -a
+          cat /etc/os-release
+
+  windows-job:
+    name: Windows Runner
+    runs-on: windows-latest
+
+    steps:
+      - name: Display Windows Information
+        shell: pwsh
+        run: |
+          Write-Host "Running on Windows"
+          Write-Host "Runner OS: $env:RUNNER_OS"
+          Write-Host "PowerShell Version:"
+          $PSVersionTable.PSVersion.ToString()
+
+          Write-Host "Chocolatey Version:"
+          choco --version
+
+          Write-Host "Windows Version:"
+          [System.Environment]::OSVersion.VersionString
+
+  macos-job:
+    name: macOS Runner
+    runs-on: macos-latest
+
+    steps:
+      - name: Display macOS Information
+        run: |
+          echo "Running on macOS"
+          sw_vers
+          swift --version
+
+      - name: Compile and Run Swift Program
+        run: |
+          echo 'print("Hello from Swift on macOS!")' > main.swift
+          swiftc main.swift -o swift-demo
+          ./swift-demo
