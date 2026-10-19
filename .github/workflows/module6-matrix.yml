@@ -1,0 +1,35 @@
+
+name: Module 6A - Matrix Build Strategy
+
+on:
+  workflow_dispatch:
+
+jobs:
+  matrix-build:
+    name: Build on ${{ matrix.os }} - Node ${{ matrix.node }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [20, 22]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      - name: Display Environment Information
+        run: |
+          echo "Operating System: ${{ matrix.os }}"
+          echo "Node.js Version: ${{ matrix.node }}"
+          node --version
+          npm --version
+
+      - name: Verify Matrix Build
+        run: echo "Matrix job completed successfully!"
